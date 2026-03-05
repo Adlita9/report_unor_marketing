@@ -509,6 +509,31 @@
       color: #bbb;
     }
 
+    /* ── CARD IMAGE ── */
+    .card-img {
+      width: 100%;
+      border-radius: 8px;
+      display: block;
+      margin-top: 16px;
+      object-fit: cover;
+      border: 1px solid var(--border);
+    }
+
+    .card-img-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .card-img-grid img {
+      width: 100%;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid var(--border);
+      aspect-ratio: 1/1;
+    }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       .hero { padding: 48px 20px 40px; }
@@ -594,6 +619,7 @@
         <span class="dot"></span>
         Výhled: exkluzivní raw materiály z tréninků → vlastní grafické &amp; video zpracování
       </div>
+      <img src="assets/sparta_HC.png" alt="HC Sparta × Enervit Instagram post" class="card-img" style="max-height:320px" />
     </div>
     <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-end;">
       <span class="status-tag status-active">● Aktivní</span>
@@ -630,6 +656,7 @@
           <div class="progress-bar-fill" style="width:40%"></div>
         </div>
       </div>
+      <img src="assets/webinar.png" alt="Enervit Webinar 2026 — Nutrition in Pro Cycling" class="card-img" />
     </div>
 
     <!-- PŮLMARATON -->
@@ -651,6 +678,10 @@
           <strong>Sleva na enervit.com</strong>
           Pro všechny účastníky závodu — přidaná hodnota bez předchozího plánování
         </div>
+      </div>
+      <div class="card-img-grid">
+        <img src="assets/kampan1.jpeg" alt="Kampaň Enervit" />
+        <img src="assets/kampan2.jpeg" alt="Kampaň Enervit" />
       </div>
     </div>
 
@@ -691,6 +722,7 @@
         <li><span class="highlight">Outlet spuštěn</span> na e-shopu Vitar Sport</li>
         <li>Kompletní grafické zpracování a finální podoba kampaní zajištěny interně</li>
       </ul>
+      <img src="assets/outlet_1200.png" alt="Royal Bay Outlet kampaň" class="card-img" />
 
       <div class="credits">
         <div class="credit-row">
