@@ -225,10 +225,17 @@
       border-color: var(--lime-border);
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 32px;
+      grid-template-areas:
+        "content sidebar"
+        "photo   photo";
+      gap: 28px 32px;
       align-items: start;
       margin-bottom: 32px;
     }
+
+    .card-top-story > .top-story-content { grid-area: content; }
+    .card-top-story > .top-story-sidebar { grid-area: sidebar; }
+    .card-top-story > .top-story-photo   { grid-area: photo; }
 
     .card-top-story:hover { border-color: rgba(228,5,33,0.4); }
 
@@ -381,7 +388,7 @@
 
     .bonus-callout .bonus-desc {
       font-size: 13px;
-      color: #bbb;
+      color: #555;
       line-height: 1.4;
     }
 
@@ -512,6 +519,7 @@
     /* ── CARD IMAGE ── */
     .card-img {
       width: 100%;
+      max-height: 260px;
       border-radius: 8px;
       display: block;
       margin-top: 16px;
@@ -531,7 +539,7 @@
       border-radius: 8px;
       object-fit: cover;
       border: 1px solid var(--border);
-      aspect-ratio: 1/1;
+      aspect-ratio: 4/3;
     }
 
     /* ── RESPONSIVE ── */
@@ -601,7 +609,7 @@
   <div class="section-label">Top story</div>
 
   <div class="card card-top-story">
-    <div>
+    <div class="top-story-content">
       <span class="top-story-badge">Top story</span>
       <div class="card-header" style="margin-top:4px">
         <div class="card-icon">🏒</div>
@@ -619,15 +627,15 @@
         <span class="dot"></span>
         Výhled: exkluzivní raw materiály z tréninků → vlastní grafické &amp; video zpracování
       </div>
-      <img src="assets/sparta_HC.png" alt="HC Sparta × Enervit Instagram post" class="card-img" style="max-height:320px" />
     </div>
-    <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-end;">
+    <div class="top-story-sidebar" style="display:flex;flex-direction:column;gap:10px;align-items:flex-end;">
       <span class="status-tag status-active">● Aktivní</span>
       <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px 20px;text-align:right;min-width:160px">
         <div style="font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--lime);line-height:1">2</div>
         <div style="font-size:11px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:.5px;font-weight:600">Posty tento týden</div>
       </div>
     </div>
+    <img src="assets/sparta_HC.png" alt="HC Sparta × Enervit Instagram post" class="card-img top-story-photo" style="margin-top:0" />
   </div>
 
   <!-- GRID 2+1 -->
