@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Royal Bay Banner Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --accent: #c8e000;
+      --accent-dark: #a0b400;
+      --bg: #0e0e0e;
+      --surface: #1a1a1a;
+      --surface2: #252525;
+      --border: #333;
+      --text: #f0f0f0;
+      --muted: #888;
+      --radius: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 16px 28px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    header .logo-badge {
+      background: var(--accent);
+      color: #000;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      letter-spacing: 1px;
+    }
+
+    header h1 {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    header p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .app {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── PANEL LEFT ── */
+    .panel {
+      width: 320px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-section {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-section h3 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--muted);
+      margin-bottom: 14px;
+      font-weight: 600;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: #ccc;
+      margin-bottom: 5px;
+      margin-top: 12px;
+    }
+
+    label:first-of-type { margin-top: 0; }
+
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--text);
+      font-size: 13px;
+      padding: 8px 11px;
+      outline: none;
+      font-family: inherit;
+      transition: border-color .2s;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent);
+    }
+
+    textarea { resize: vertical; min-height: 50px; }
+
+    .row2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .color-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .color-row input[type="color"] {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 2px;
+      background: var(--surface2);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .color-row span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+      margin-top: 4px;
+    }
+
+    .range-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .range-row input { flex: 1; }
+    .range-row span { font-size: 12px; color: var(--muted); min-width: 32px; text-align: right; }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+
+    .toggle-row label { margin: 0; font-size: 13px; color: #ccc; }
+
+    .toggle {
+      position: relative;
+      width: 38px;
+      height: 22px;
+    }
+
+    .toggle input { opacity: 0; width: 0; height: 0; }
+
+    .slider-knob {
+      position: absolute;
+      inset: 0;
+      background: var(--border);
+      border-radius: 11px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .slider-knob:before {
+      content: '';
+      position: absolute;
+      left: 3px;
+      top: 3px;
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform .2s;
+    }
+
+    .toggle input:checked + .slider-knob { background: var(--accent); }
+    .toggle input:checked + .slider-knob:before { transform: translateX(16px); }
+
+    .upload-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 10px;
+      background: var(--surface2);
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      cursor: pointer;
+      transition: border-color .2s, color .2s;
+      margin-top: 4px;
+    }
+
+    .upload-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .upload-btn svg { width: 18px; height: 18px; }
+
+    /* ── FORMAT PRESETS ── */
+    .format-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .fmt-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 4px;
+      cursor: pointer;
+      text-align: center;
+      transition: border-color .2s, background .2s;
+    }
+
+    .fmt-btn.active {
+      border-color: var(--accent);
+      background: rgba(200,224,0,.1);
+    }
+
+    .fmt-btn .fmt-icon {
+      margin: 0 auto 5px;
+      background: var(--border);
+      border-radius: 3px;
+    }
+
+    .fmt-btn span { font-size: 10px; color: var(--muted); display: block; }
+    .fmt-btn.active span { color: var(--accent); }
+
+    /* ── CANVAS AREA ── */
+    .canvas-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #111;
+      padding: 32px;
+      overflow: auto;
+      gap: 20px;
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      box-shadow: 0 8px 40px rgba(0,0,0,.6);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    #bannerCanvas {
+      display: block;
+      max-width: 100%;
+      max-height: calc(100vh - 200px);
+    }
+
+    .canvas-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: opacity .2s, transform .1s;
+      font-family: inherit;
+    }
+
+    .btn:active { transform: scale(0.97); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+    }
+
+    .btn-primary:hover { opacity: 0.9; }
+
+    .btn-ghost {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    .download-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .info-bar {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-badge">RB</div>
+  <div>
+    <h1>Royal Bay Banner Generator</h1>
+    <p>Generátor marketingových bannerů</p>
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- ── LEFT PANEL ── -->
+  <aside class="panel">
+
+    <!-- Format -->
+    <div class="panel-section">
+      <h3>Formát banneru</h3>
+      <div class="format-grid" id="formatGrid">
+        <div class="fmt-btn active" data-w="1200" data-h="628" data-id="feed">
+          <div class="fmt-icon" style="width:30px;height:16px;"></div>
+          <span>FB Feed</span>
+          <span style="font-size:9px;margin-top:2px;color:#555">1200×628</span>
+        </div>
+        <div class="fmt-btn" data-w="1080" data-h="1080" data-id="square">
+          <div class="fmt-icon" style="width:22px;height:22px;"></div>
+          <span>Čtverec</span>
+          <span style="font-size:9px;margin-top:2px;color:#555">1080×1080</span>
+        </div>
+        <div class="fmt-btn" data-w="1080" data-h="1920" data-id="story">
+          <div class="fmt-icon" style="width:12px;height:22px;"></div>
+          <span>Story</span>
+          <span style="font-size:9px;margin-top:2px;color:#555">1080×1920</span>
+        </div>
+        <div class="fmt-btn" data-w="960" data-h="1200" data-id="portrait">
+          <div class="fmt-icon" style="width:16px;height:20px;"></div>
+          <span>Portrét</span>
+          <span style="font-size:9px;margin-top:2px;color:#555">960×1200</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Background -->
+    <div class="panel-section">
+      <h3>Pozadí</h3>
+      <label for="bgUpload">Nahrajte fotku</label>
+      <label class="upload-btn" for="bgUpload">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+        Klikněte nebo přetáhněte
+      </label>
+      <input type="file" id="bgUpload" accept="image/*" style="display:none" />
+
+      <label>Tmavý překryv</label>
+      <div class="range-row">
+        <input type="range" id="overlayOpacity" min="0" max="100" value="45" />
+        <span id="overlayVal">45%</span>
+      </div>
+    </div>
+
+    <!-- Text -->
+    <div class="panel-section">
+      <h3>Text</h3>
+
+      <label>Horní řádek (malý)</label>
+      <input type="text" id="txtTop" value="ROYAL BAY" />
+      <div class="color-row">
+        <input type="color" id="clrTop" value="#ffffff" />
+        <span>Barva horního textu</span>
+      </div>
+
+      <label>Hlavní nadpis (velký)</label>
+      <input type="text" id="txtMain" value="SPOUŠTÍME" />
+      <div class="color-row">
+        <input type="color" id="clrMain" value="#ffffff" />
+        <span>Barva hlavního textu</span>
+      </div>
+
+      <label>Akcentový text (zvýraznění)</label>
+      <input type="text" id="txtAccent" value="OUTLET" />
+      <div class="color-row">
+        <input type="color" id="clrAccent" value="#c8e000" />
+        <span>Barva akcentu</span>
+      </div>
+
+      <label>Spodní řádek (podtitul)</label>
+      <input type="text" id="txtSub" value="ROYAL BAY!" />
+      <div class="color-row">
+        <input type="color" id="clrSub" value="#ffffff" />
+        <span>Barva spodního textu</span>
+      </div>
+    </div>
+
+    <!-- Discount Badge -->
+    <div class="panel-section">
+      <h3>Odznak slevy</h3>
+      <div class="toggle-row">
+        <label>Zobrazit odznak</label>
+        <label class="toggle">
+          <input type="checkbox" id="showBadge" checked />
+          <span class="slider-knob"></span>
+        </label>
+      </div>
+
+      <label>Text odznaku</label>
+      <input type="text" id="badgeText" value="-30 %" />
+
+      <label>Pozice odznaku</label>
+      <select id="badgePos">
+        <option value="top-left">Vlevo nahoře</option>
+        <option value="top-right">Vpravo nahoře</option>
+        <option value="bottom-left" selected>Vlevo dole</option>
+        <option value="bottom-right">Vpravo dole</option>
+      </select>
+
+      <div class="color-row" style="margin-top:10px">
+        <input type="color" id="clrBadgeBg" value="#1a1a1a" />
+        <span>Barva pozadí odznaku</span>
+      </div>
+      <div class="color-row">
+        <input type="color" id="clrBadgeText" value="#c8e000" />
+        <span>Barva textu odznaku</span>
+      </div>
+    </div>
+
+    <!-- Logo -->
+    <div class="panel-section">
+      <h3>Logo</h3>
+      <div class="toggle-row">
+        <label>Zobrazit RB logo</label>
+        <label class="toggle">
+          <input type="checkbox" id="showLogo" checked />
+          <span class="slider-knob"></span>
+        </label>
+      </div>
+
+      <label for="logoUpload">Vlastní logo (volitelné)</label>
+      <label class="upload-btn" for="logoUpload">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        Nahrát logo
+      </label>
+      <input type="file" id="logoUpload" accept="image/*" style="display:none" />
+    </div>
+
+    <!-- Text Style -->
+    <div class="panel-section">
+      <h3>Styl textu</h3>
+      <label>Velikost hlavního textu</label>
+      <div class="range-row">
+        <input type="range" id="mainFontSize" min="30" max="120" value="72" />
+        <span id="mainFontVal">72</span>
+      </div>
+
+      <label>Poloha textu (vertikálně)</label>
+      <div class="range-row">
+        <input type="range" id="textOffset" min="-200" max="200" value="0" />
+        <span id="textOffsetVal">0</span>
+      </div>
+
+      <label>Styl textu</label>
+      <select id="textAlign">
+        <option value="left">Vlevo</option>
+        <option value="center" selected>Na střed</option>
+        <option value="right">Vpravo</option>
+      </select>
+    </div>
+
+  </aside>
+
+  <!-- ── CANVAS AREA ── -->
+  <main class="canvas-area">
+    <div class="canvas-wrapper">
+      <canvas id="bannerCanvas"></canvas>
+    </div>
+
+    <div class="info-bar" id="sizeInfo">1200 × 628 px</div>
+
+    <div class="canvas-actions">
+      <div class="download-group">
+        <button class="btn btn-primary" onclick="downloadBanner('png')">
+          ↓ Stáhnout PNG
+        </button>
+        <button class="btn btn-ghost" onclick="downloadBanner('jpg')">
+          ↓ Stáhnout JPG
+        </button>
+      </div>
+      <button class="btn btn-ghost" onclick="resetAll()">
+        Resetovat
+      </button>
+    </div>
+  </main>
+
+</div>
+
+<script>
+  const canvas = document.getElementById('bannerCanvas');
+  const ctx = canvas.getContext('2d');
+
+  let bgImage = null;
+  let logoImage = null;
+  let currentW = 1200;
+  let currentH = 628;
+
+  // Scale for display
+  const DISPLAY_SCALE = 0.5;
+
+  function setFormat(w, h) {
+    currentW = w;
+    currentH = h;
+    canvas.width = w;
+    canvas.height = h;
+    canvas.style.width = Math.round(w * DISPLAY_SCALE) + 'px';
+    canvas.style.height = Math.round(h * DISPLAY_SCALE) + 'px';
+    document.getElementById('sizeInfo').textContent = `${w} × ${h} px`;
+    render();
+  }
+
+  // Format buttons
+  document.getElementById('formatGrid').querySelectorAll('.fmt-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      setFormat(+btn.dataset.w, +btn.dataset.h);
+    });
+  });
+
+  // Background upload
+  document.getElementById('bgUpload').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => { bgImage = img; render(); };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Logo upload
+  document.getElementById('logoUpload').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => { logoImage = img; render(); };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Live updates
+  const inputs = document.querySelectorAll('input, select, textarea');
+  inputs.forEach(el => {
+    el.addEventListener('input', render);
+    el.addEventListener('change', render);
+  });
+
+  document.getElementById('overlayOpacity').addEventListener('input', function() {
+    document.getElementById('overlayVal').textContent = this.value + '%';
+  });
+
+  document.getElementById('mainFontSize').addEventListener('input', function() {
+    document.getElementById('mainFontVal').textContent = this.value;
+  });
+
+  document.getElementById('textOffset').addEventListener('input', function() {
+    document.getElementById('textOffsetVal').textContent = this.value;
+  });
+
+  // ── RENDER ──
+  function render() {
+    const W = currentW;
+    const H = currentH;
+    ctx.clearRect(0, 0, W, H);
+
+    // 1. Background
+    if (bgImage) {
+      const scale = Math.max(W / bgImage.width, H / bgImage.height);
+      const sw = bgImage.width * scale;
+      const sh = bgImage.height * scale;
+      const sx = (W - sw) / 2;
+      const sy = (H - sh) / 2;
+      ctx.drawImage(bgImage, sx, sy, sw, sh);
+    } else {
+      // Gradient placeholder
+      const grad = ctx.createLinearGradient(0, 0, W, H);
+      grad.addColorStop(0, '#1a2a1a');
+      grad.addColorStop(1, '#0a1a0a');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      // Placeholder text
+      ctx.fillStyle = 'rgba(255,255,255,0.1)';
+      ctx.font = `${Math.round(W * 0.025)}px Inter`;
+      ctx.textAlign = 'center';
+      ctx.fillText('Nahrajte fotku pozadí', W / 2, H / 2);
+    }
+
+    // 2. Dark overlay
+    const opacity = document.getElementById('overlayOpacity').value / 100;
+    ctx.fillStyle = `rgba(0,0,0,${opacity})`;
+    ctx.fillRect(0, 0, W, H);
+
+    // 3. Text
+    const align = document.getElementById('textAlign').value;
+    const offset = +document.getElementById('textOffset').value;
+    const mainSize = +document.getElementById('mainFontSize').value;
+
+    const txtTop = document.getElementById('txtTop').value;
+    const txtMain = document.getElementById('txtMain').value;
+    const txtAccent = document.getElementById('txtAccent').value;
+    const txtSub = document.getElementById('txtSub').value;
+
+    const clrTop = document.getElementById('clrTop').value;
+    const clrMain = document.getElementById('clrMain').value;
+    const clrAccent = document.getElementById('clrAccent').value;
+    const clrSub = document.getElementById('clrSub').value;
+
+    const scale = W / 1200;
+    const baseSize = mainSize * scale;
+    const topSize = Math.round(baseSize * 0.27);
+    const subSize = Math.round(baseSize * 0.32);
+
+    let textX;
+    if (align === 'left') textX = W * 0.06;
+    else if (align === 'right') textX = W * 0.94;
+    else textX = W / 2;
+
+    ctx.textAlign = align;
+    ctx.shadowColor = 'rgba(0,0,0,0.6)';
+    ctx.shadowBlur = 12;
+
+    // Calculate vertical center
+    const totalH = topSize + 4 + baseSize + baseSize * 1.05 + subSize + 8;
+    let startY = (H - totalH) / 2 + offset * scale;
+
+    // Top line
+    if (txtTop) {
+      ctx.font = `600 ${topSize}px Oswald`;
+      ctx.fillStyle = clrTop;
+      ctx.globalAlpha = 0.8;
+      ctx.fillText(txtTop, textX, startY + topSize);
+    }
+
+    startY += topSize + 10;
+
+    // Main line
+    if (txtMain) {
+      ctx.font = `700 ${Math.round(baseSize)}px Oswald`;
+      ctx.fillStyle = clrMain;
+      ctx.globalAlpha = 1;
+      ctx.letterSpacing = '2px';
+      ctx.fillText(txtMain, textX, startY + baseSize);
+    }
+
+    startY += baseSize * 1.0;
+
+    // Accent line
+    if (txtAccent) {
+      ctx.font = `700 ${Math.round(baseSize * 1.05)}px Oswald`;
+      ctx.fillStyle = clrAccent;
+      ctx.globalAlpha = 1;
+      ctx.fillText(txtAccent, textX, startY + baseSize);
+    }
+
+    startY += baseSize * 1.05;
+
+    // Sub line
+    if (txtSub) {
+      ctx.font = `600 ${subSize}px Oswald`;
+      ctx.fillStyle = clrSub;
+      ctx.globalAlpha = 0.9;
+      ctx.fillText(txtSub, textX, startY + subSize + 4);
+    }
+
+    ctx.globalAlpha = 1;
+    ctx.shadowBlur = 0;
+
+    // 4. Discount badge
+    if (document.getElementById('showBadge').checked) {
+      drawBadge(W, H, scale);
+    }
+
+    // 5. Logo
+    if (document.getElementById('showLogo').checked) {
+      drawLogo(W, H, scale);
+    }
+  }
+
+  function drawBadge(W, H, scale) {
+    const text = document.getElementById('badgeText').value;
+    const pos = document.getElementById('badgePos').value;
+    const bgColor = document.getElementById('clrBadgeBg').value;
+    const textColor = document.getElementById('clrBadgeText').value;
+
+    if (!text) return;
+
+    const pad = 18 * scale;
+    const fontSize = 34 * scale;
+    ctx.font = `700 ${Math.round(fontSize)}px Oswald`;
+    const tw = ctx.measureText(text).width;
+    const bw = tw + pad * 2;
+    const bh = fontSize + pad * 1.4;
+
+    const margin = 28 * scale;
+    let bx, by;
+
+    if (pos === 'top-left') { bx = margin; by = margin; }
+    else if (pos === 'top-right') { bx = W - bw - margin; by = margin; }
+    else if (pos === 'bottom-left') { bx = margin; by = H - bh - margin; }
+    else { bx = W - bw - margin; by = H - bh - margin; }
+
+    // Badge background with slight radius
+    const r = 6 * scale;
+    ctx.fillStyle = bgColor;
+    ctx.globalAlpha = 0.88;
+    roundRect(ctx, bx, by, bw, bh, r);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+
+    // Badge text
+    ctx.shadowColor = 'transparent';
+    ctx.fillStyle = textColor;
+    ctx.textAlign = 'center';
+    ctx.font = `700 ${Math.round(fontSize)}px Oswald`;
+    ctx.fillText(text, bx + bw / 2, by + bh * 0.72);
+  }
+
+  function drawLogo(W, H, scale) {
+    const margin = 24 * scale;
+
+    if (logoImage) {
+      const lh = 48 * scale;
+      const lw = (logoImage.width / logoImage.height) * lh;
+      ctx.globalAlpha = 0.9;
+      ctx.drawImage(logoImage, W - lw - margin, margin, lw, lh);
+      ctx.globalAlpha = 1;
+    } else {
+      // Draw default RB text logo
+      const sz = 22 * scale;
+      const pad = 8 * scale;
+      ctx.font = `700 ${Math.round(sz)}px Oswald`;
+      const tw = ctx.measureText('✕RB').width;
+      const bw = tw + pad * 2;
+      const bh = sz + pad * 1.2;
+      const bx = W - bw - margin;
+      const by = margin;
+
+      ctx.fillStyle = 'rgba(0,0,0,0.5)';
+      ctx.globalAlpha = 0.8;
+      roundRect(ctx, bx, by, bw, bh, 4 * scale);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      ctx.fillStyle = '#c8e000';
+      ctx.textAlign = 'center';
+      ctx.shadowBlur = 0;
+      ctx.fillText('✕RB', bx + bw / 2, by + bh * 0.75);
+    }
+  }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
+  function downloadBanner(fmt) {
+    const a = document.createElement('a');
+    const mimeType = fmt === 'jpg' ? 'image/jpeg' : 'image/png';
+    const quality = fmt === 'jpg' ? 0.95 : 1;
+    a.href = canvas.toDataURL(mimeType, quality);
+
+    const fmtBtn = document.querySelector('.fmt-btn.active');
+    const fmtId = fmtBtn ? fmtBtn.dataset.id : 'banner';
+    a.download = `royalbay-${fmtId}-${Date.now()}.${fmt}`;
+    a.click();
+  }
+
+  function resetAll() {
+    bgImage = null;
+    logoImage = null;
+    document.getElementById('txtTop').value = 'ROYAL BAY';
+    document.getElementById('txtMain').value = 'SPOUŠTÍME';
+    document.getElementById('txtAccent').value = 'OUTLET';
+    document.getElementById('txtSub').value = 'ROYAL BAY!';
+    document.getElementById('clrTop').value = '#ffffff';
+    document.getElementById('clrMain').value = '#ffffff';
+    document.getElementById('clrAccent').value = '#c8e000';
+    document.getElementById('clrSub').value = '#ffffff';
+    document.getElementById('overlayOpacity').value = 45;
+    document.getElementById('overlayVal').textContent = '45%';
+    document.getElementById('badgeText').value = '-30 %';
+    document.getElementById('showBadge').checked = true;
+    document.getElementById('showLogo').checked = true;
+    document.getElementById('mainFontSize').value = 72;
+    document.getElementById('mainFontVal').textContent = '72';
+    document.getElementById('textOffset').value = 0;
+    document.getElementById('textOffsetVal').textContent = '0';
+    document.getElementById('textAlign').value = 'center';
+    render();
+  }
+
+  // Drag & drop for background
+  const canvasWrapper = canvas.parentElement;
+  canvasWrapper.addEventListener('dragover', e => { e.preventDefault(); canvasWrapper.style.outline = '2px dashed #c8e000'; });
+  canvasWrapper.addEventListener('dragleave', () => { canvasWrapper.style.outline = ''; });
+  canvasWrapper.addEventListener('drop', e => {
+    e.preventDefault();
+    canvasWrapper.style.outline = '';
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = new Image();
+        img.onload = () => { bgImage = img; render(); };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Init
+  setFormat(1200, 628);
+</script>
+</body>
+</html>
