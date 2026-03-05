@@ -542,6 +542,23 @@
       aspect-ratio: 4/3;
     }
 
+    /* Outlet 2×2 image grid */
+    .outlet-img-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 16px;
+    }
+
+    .outlet-img-grid img {
+      width: 100%;
+      border-radius: 6px;
+      object-fit: cover;
+      object-position: top center;
+      border: 1px solid var(--border);
+      aspect-ratio: 4/5;
+    }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       .hero { padding: 48px 20px 40px; }
@@ -730,7 +747,12 @@
         <li><span class="highlight">Outlet spuštěn</span> na e-shopu Vitar Sport</li>
         <li>Kompletní grafické zpracování a finální podoba kampaní zajištěny interně</li>
       </ul>
-      <img src="assets/outlet_1200.png" alt="Royal Bay Outlet kampaň" class="card-img" />
+      <div class="outlet-img-grid">
+        <img src="assets/outlet_1200.png" alt="Royal Bay Outlet — čtvercový post" />
+        <img src="assets/outlet_square.png" alt="Royal Bay Outlet — square" />
+        <img src="assets/outlet_port.png" alt="Royal Bay Outlet — portrait" />
+        <img src="assets/outlet_story.png" alt="Royal Bay Outlet — story" />
+      </div>
 
       <div class="credits">
         <div class="credit-row">
